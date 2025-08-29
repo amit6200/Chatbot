@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TATVA</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Toggle Button -->
+        <button id="sidebar-toggle" class="sidebar-toggle">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2 class="app-title">TATVA</h2>
+                <button id="new-chat-btn" class="new-chat-btn">
+                    <span class="icon"><i class="fas fa-plus"></i></span>
+                    <span>New Chat</span>
+                </button>
+            </div>
+            <div class="chat-history" id="chat-history">
+                <!-- Chat history items will be added here dynamically -->
+            </div>
+            <div class="sidebar-footer">
+                <button id="settings-btn" class="sidebar-btn">
+                    <span class="icon"><i class="fas fa-cog"></i></span>
+                    <span>Settings</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="main-content">
+            <!-- Chat Container -->
+            <div class="chat-container" id="chat-container">
+                <!-- Welcome message -->
+                <div class="welcome-container" id="welcome-container">
+                    <h1>TATVA</h1>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                            <h3>General Chat</h3>
+                            <p>Ask any question or have a conversation</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-file-alt"></i></div>
+                            <h3>Document Q&A</h3>
+                            <p>Upload documents and ask questions about them</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-clipboard-list"></i></div>
+                            <h3>Meeting Summarizer</h3>
+                            <p>Convert meeting transcripts into concise minutes</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fas fa-code"></i></div>
+                            <h3>Code Execution</h3>
+                            <p>Run Python code snippets directly in the chat</p>
+                        </div>
+                    </div>
+                    <div class="quick-start-container">
+                        <h2>Quick Start</h2>
+                        <div class="quick-start-prompts">
+                            <button class="quick-start-btn" data-prompt="What can you help me with?">What can you help me with?</button>
+                            <button class="quick-start-btn" data-prompt="How do I upload documents for analysis?">How do I upload documents?</button>
+                            <button class="quick-start-btn" data-prompt="Create a simple Python function to calculate the factorial of a number">Generate Python code</button>
+                            <button class="quick-start-btn" data-prompt="Review my document for errors">Review my document</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Goal Analyzer Welcome Container -->
+                <div class="goal-analyzer-container" id="goal-analyzer-container" style="display: none;">
+                    <h1>Welcome to Goal Analyzer</h1>
+                    <p class="goal-analyzer-description">Upload any type of file or document to analyze your goals, projects, and objectives. Our AI will provide insights, suggestions, and actionable recommendations based on your content.</p>
+                    
+                    <div class="goal-analyzer-features">
+                        <div class="analyzer-feature-card">
+                            <div class="feature-icon"><i class="fas fa-bullseye"></i></div>
+                            <h3>Goal Analysis</h3>
+                            <p>Identify and analyze goals from your documents</p>
+                        </div>
+                        <div class="analyzer-feature-card">
+                            <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                            <h3>Progress Tracking</h3>
+                            <p>Track progress and milestones in your projects</p>
+                        </div>
+                        <div class="analyzer-feature-card">
+                            <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+                            <h3>Smart Insights</h3>
+                            <p>Get AI-powered insights and recommendations</p>
+                        </div>
+                        <div class="analyzer-feature-card">
+                            <div class="feature-icon"><i class="fas fa-tasks"></i></div>
+                            <h3>Action Planning</h3>
+                            <p>Generate actionable plans from your content</p>
+                        </div>
+                    </div>
+
+                    <div class="goal-upload-section">
+                        <h2>Upload Your Document</h2>
+                        <div class="goal-upload-area" id="goal-upload-area">
+                            <div class="upload-drop-zone" id="goal-drop-zone">
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <h3>Drop your files here or click to browse</h3>
+                                <p>Supports: PDF, DOCX, TXT, JSON, CSV, Excel files</p>
+                                <button class="browse-files-btn" id="goal-browse-btn">
+                                    <i class="fas fa-folder-open"></i>
+                                    Browse Files
+                                </button>
+                                <input type="file" id="goal-file-input" multiple accept=".pdf,.docx,.doc,.txt,.json,.csv,.xlsx,.xls" style="display: none;">
+                            </div>
+                        </div>
+                        
+                        <div class="uploaded-goal-files" id="uploaded-goal-files" style="display: none;">
+                            <h3>Uploaded Files</h3>
+                            <div class="goal-files-list" id="goal-files-list">
+                                <!-- Uploaded files will appear here -->
+                            </div>
+                            <button class="analyze-goals-btn" id="analyze-goals-btn">
+                                <i class="fas fa-search"></i>
+                                Analyze Goals
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="quick-start-container">
+                        <h2>Quick Start</h2>
+                        <div class="quick-start-prompts">
+                            <button class="quick-start-btn" data-prompt="What can you help me with?">What can you help me with?</button>
+                            <button class="quick-start-btn" data-prompt="How do I upload documents for analysis?">How do I upload documents?</button>
+                            <button class="quick-start-btn" data-prompt="Create a simple Python function to calculate the factorial of a number">Generate Python code</button>
+                            <button class="quick-start-btn" data-prompt="Review my document for errors">Review my document</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat header with conversation title (only visible in active chat) -->
+                <div class="chat-header" id="chat-header" style="display: none;">
+                    <h2 id="conversation-title" contenteditable="true"></h2>
+                    <div class="chat-controls">
+                        <button id="delete-chat-btn" class="icon-btn" title="Delete Conversation">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                        <button id="back-to-main-btn" class="icon-btn" title="Back to Main" style="display: none;">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages will be displayed here -->
+                <div class="messages" id="messages">
+                    <!-- Messages will be added here dynamically -->
+                </div>
+                
+                <!-- Typing indicator -->
+                <div class="typing-indicator" id="typing-indicator" style="display: none;">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-container">
+                <div class="message-input-wrapper">
+                    <div class="input-controls">
+                        <button id="upload-icon" class="input-action-btn" title="Upload Document">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </button>
+                        <button id="code-icon" class="input-action-btn" title="Run Python Code">
+                            <i class="fas fa-code"></i>
+                        </button>
+                        <div class="document-status" id="document-status">
+                            <span class="doc-indicator" id="doc-indicator"></span>
+                        </div>
+                        <div id="docs-container" class="docs-container" style="display: none;">
+                            <span id="doc-count">0</span> documents
+                        </div>
+                    </div>
+                    <textarea id="message-input" placeholder="Message TATVA..." rows="1"></textarea>
+                    <button id="send-btn" class="send-btn" disabled>
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+               
+                </div>
+                <div class="button-wrapper">
+                    <div class="creativity-coach-link">
+                        <a href="?app=creativity_coach" class="coach-btn">
+                                <i class="fa fa-lightbulb coach-icon"></i>
+                        <span>Need creative inspiration? </span>
+                        </a>
+                    </div>
+                    <div class="microtraining-link">
+                        <a href="?app=microtraining" class="coach-btn">
+                                <i class="fa fa-book coach-icon"></i>
+                        <span>Hyper-personalised Learning</span>
+                        </a>
+                    </div>
+                    <div class="goal-analyzer-link">
+                        <button id="goal-analyzer-btn" class="coach-btn">
+                                <i class="fa fa-bullseye coach-icon"></i>
+                        <span>Goal Analyzer</span>
+                        </button>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="upload-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Upload Document</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Upload your documents for the chatbot to analyze. Supported formats: PDF, DOCX, TXT, JSON</p>
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="file-upload-container">
+                        <label for="file-upload" class="file-upload-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Choose a file or drag it here</span>
+                        </label>
+                        <input type="file" id="file-upload" name="file" accept=".pdf,.docx,.doc,.txt,.json" />
+                    </div>
+                    <div id="file-info" class="file-info">
+                        <p>No file selected</p>
+                    </div>
+                    <div class="upload-actions">
+                        <button type="button" id="cancel-upload" class="btn cancel-btn">Cancel</button>
+                        <button type="submit" id="submit-upload" class="btn primary-btn" disabled>Upload</button>
+                        
+                    </div>
+                </form>
+                <div id="upload-progress" class="upload-progress" style="display: none;">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                    <p class="progress-text">Uploading: 0%</p>
+                </div>
+                <div id="uploaded-files" class="uploaded-files">
+                    <h3>Uploaded Documents</h3>
+                    <ul id="uploaded-files-list">
+                        <!-- Uploaded files will be listed here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Settings</h2>
+                <span class="close-modal">&times;</span>
+            </div>
+         
+            <div class="modal-body">
+                <div class="settings-section">
+                    <h3>Chat Settings</h3>
+                    <div class="setting-item">
+                        <label for="system-prompt">System Prompt:</label>
+                        <textarea id="system-prompt" rows="4" placeholder="You are a helpful assistant...">You are a helpful assistant that provides accurate and concise answers.</textarea>
+                    </div>
+                    <div class="setting-item">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="save-chat-history" checked>
+                            <span>Save chat history between sessions</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="use-docs-toggle">
+                            <span>Use uploaded documents by default</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Document Settings</h3>
+                    <div class="setting-item">
+                        <label for="chunk-size">Chunk Size:</label>
+                        <input type="number" id="chunk-size" value="1000" min="100" max="5000">
+                    </div>
+                    <div class="setting-item">
+                        <label for="overlap-size">Chunk Overlap:</label>
+                        <input type="number" id="overlap-size" value="200" min="0" max="1000">
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Model Settings</h3>
+                    <div class="setting-item">
+                        <label for="model-temperature">Temperature:</label>
+                        <input type="range" id="model-temperature" min="0" max="1" step="0.1" value="0.7">
+                        <span id="temperature-value">0.7</span>
+                    </div>
+                    <div class="setting-item">
+                        <label for="model-max-tokens">Max Response Length:</label>
+                        <input type="number" id="model-max-tokens" value="1000" min="100" max="4000">
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Code Execution Settings</h3>
+                    <div class="setting-item">
+                        <label for="code-timeout">Code Execution Timeout (seconds):</label>
+                        <input type="number" id="code-timeout" value="5" min="1" max="30">
+                    </div>
+                    <div class="setting-item">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="auto-run-code" checked>
+                            <span>Automatically run Python code examples</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="settings-section">
+                    <h3>Interface Settings</h3>
+                    <div class="setting-item">
+                        <label for="theme-selector">Theme:</label>
+                        <select id="theme-selector">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="system">System Default</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="auto-scroll" checked>
+                            <span>Auto-scroll to latest messages</span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="show-thinking-indicator" checked>
+                            <span>Show thinking indicator while processing</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="settings-actions">
+                    <button id="clear-all-documents-btn" class="danger-btn">
+                        <i class="fas fa-trash"></i> Delete All Documents
+                    </button>
+                    <button id="clear-chat-btn" class="btn warning-btn">Clear Current Chat</button>
+                    <button id="reset-settings" class="btn cancel-btn">Reset to Default</button>
+                    <button id="save-settings" class="btn primary-btn">Save Settings</button>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+   
+   
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Loading Spinner -->
+    <div id="loading-spinner" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Thinking Indicator Template -->
+    <template id="thinking-indicator-template">
+        <div class="thinking-indicator">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+    </template>
+
+    <!-- Scripts -->
+    <script>
+        // Receive values from server
+        let appName = "{{ app_name | default('')}}";
+        let serverSystemPrompt = "{{ server_system_prompt | default('')}}";
+        let enableDocs = "{{ enable_docs | default(false)}}";  // Will be "true" or "false" in JavaScript
+        
+        // Goal Analyzer State
+        let isGoalAnalyzerMode = false;
+        let uploadedGoalFiles = [];
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-python.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/documents.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/goal-analyzer.js"></script>
+
+    <style>
+        /* Goal Analyzer Styles */
+        .goal-analyzer-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .goal-analyzer-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .goal-analyzer-description {
+            font-size: 1.1rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .goal-analyzer-features {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* exactly 4 columns */
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+
+        .analyzer-feature-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .analyzer-feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .goal-upload-section {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .goal-upload-section h2 {
+            margin-bottom: 1.5rem;
+            color: #374151;
+        }
+
+        .upload-drop-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-drop-zone:hover {
+            border-color: #667eea;
+            background: #f9fafb;
+        }
+
+        .upload-drop-zone.dragover {
+            border-color: #667eea;
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+        }
+
+        .upload-drop-zone h3 {
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-drop-zone p {
+            color: #6b7280;
+            margin-bottom: 1.5rem;
+        }
+
+        .browse-files-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .browse-files-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .goal-files-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .goal-file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .goal-file-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .file-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        .file-icon.pdf { background: #ef4444; }
+        .file-icon.doc { background: #2563eb; }
+        .file-icon.txt { background: #059669; }
+        .file-icon.json { background: #f59e0b; }
+        .file-icon.csv { background: #10b981; }
+        .file-icon.excel { background: #16a34a; }
+
+        .analyze-goals-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .analyze-goals-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .goal-examples {
+            text-align: center;
+        }
+
+        .goal-examples h3 {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        .example-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .example-tag {
+            background: #e5e7eb;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+       
+
+       .coach-btn {
+            background: linear-gradient(135deg, #a4b3f3 0%);
+
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+         .coach-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            .analyzer-feature-card {
+                background: #1f2937;
+                color: #f9fafb;
+            }
+
+            .goal-upload-section {
+                background: #111827;
+            }
+
+            .upload-drop-zone {
+                background: #1f2937;
+                border-color: #374151;
+                color: #f9fafb;
+            }
+
+            .upload-drop-zone:hover {
+                background: #374151;
+            }
+
+            .goal-file-item {
+                background: #1f2937;
+                color: #f9fafb;
+            }
+
+            .example-tag {
+                background: #374151;
+                color: #f9fafb;
+            }
+        }
+    </style>
